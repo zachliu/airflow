@@ -1938,6 +1938,11 @@ class LazyDeserializedDAG(pydantic.BaseModel):
         # This function is complex to implement, for now we delegate deserialize the dag and delegate to that.
         return self._real_dag.next_dagrun_info(*args, **kwargs)
 
+    @property
+    def access_control(self) -> Mapping[str, Mapping[str, Collection[str]] | Collection[str]] | None:
+        # This function is complex to implement, for now we delegate deserialize the dag and delegate to that.
+        return self._real_dag.access_control
+
     @cached_property
     def _real_dag(self):
         return SerializedDAG.from_dict(self.data)
@@ -1998,11 +2003,6 @@ class LazyDeserializedDAG(pydantic.BaseModel):
             raise ValueError(f"Cannot calculate data interval for run {run}")
 
         return data_interval
-
-    if TYPE_CHECKING:
-        access_control: Mapping[str, Mapping[str, Collection[str]] | Collection[str]] | None = pydantic.Field(
-            init=False, default=None
-        )
 
 
 @attrs.define()
